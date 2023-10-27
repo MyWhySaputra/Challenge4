@@ -19,7 +19,7 @@ model user {
   updateAt  DateTime? @default(now())
   deletedAt DateTime?
   profile   profile[]
-  bank_accounts bank_accounts[]
+  bank_accounts bankAccounts[]
 }
 
 model profile {
@@ -34,11 +34,11 @@ model profile {
   user user @relation(fields: [user_id], references: [id])
 }
 
-model bank_accounts {
+model bankAccounts {
   id                  Int       @id @default(autoincrement())
-  user_id             Int       @unique
+  user_id             Int       
   bank_name           String    @db.VarChar(100)
-  bank_account_number String    @db.VarChar(100)
+  bank_account_number Int       @unique
   balance             BigInt    @db.BigInt
   createAt            DateTime  @default(now())
   updateAt            DateTime? @default(now())
@@ -56,6 +56,6 @@ model transactions {
   createAt                DateTime  @default(now())
   updateAt                DateTime? @default(now())
   deletedAt               DateTime?
-  bank_account_source      bank_accounts @relation(name: "transactionSourceAccount", fields: [source_account_id], references: [id])
-  bank_account_destination bank_accounts @relation(name: "transactionDestinationAccount", fields: [destination_account_id], references: [id])
+  bank_account_source      bankAccounts @relation(name: "transactionSourceAccount", fields: [source_account_id], references: [bank_account_number])
+  bank_account_destination bankAccounts @relation(name: "transactionDestinationAccount", fields: [destination_account_id], references: [bank_account_number])
 }

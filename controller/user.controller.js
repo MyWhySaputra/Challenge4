@@ -1,5 +1,5 @@
 const { ResponseTemplate } = require('../helper/template.helper')
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient} = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
@@ -7,7 +7,7 @@ async function Insert(req, res) {
 
     const { name, email, password, identity_type, identity_id, address } = req.body
 
-    const payload = {
+    payload = {
         name,
         email,
         password,
@@ -63,8 +63,17 @@ async function Get(req, res) {
 
         const users = await prisma.user.findMany({
             where: payload,
-            include: {
-                profile: true
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                profile: {
+                    select: {
+                        identity_type: true,
+                        identity_number: true,
+                        address: true
+                    }
+                }
             }
         });
 
@@ -90,8 +99,17 @@ async function GetByPK(req, res) {
             where: {
                 id: Number(id)
             },
-            include: {
-                profile: true
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                profile: {
+                    select: {
+                        identity_type: true,
+                        identity_number: true,
+                        address: true
+                    }
+                }
             }
         })
 

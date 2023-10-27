@@ -8,18 +8,18 @@ async function Insert(req, res) {
     const { user_id, bank_name, bank_account_number, balance } = req.body
 
     const payload = {
-        user_id,
+        user_id: parseInt(user_id),
         bank_name,
-        bank_account_number,
-        balance
+        bank_account_number: parseInt(bank_account_number),
+        balance: parseInt(balance)
     }
 
     try {
-        const account = await prisma.bank_accounts.create({
+        const bankaccount = await prisma.bankAccounts.create({
             data: payload
         })
 
-        let resp = ResponseTemplate(account, 'success', null, 200)
+        let resp = ResponseTemplate(bankaccount, 'success', null, 200)
         res.json(resp)
         return
 
@@ -56,7 +56,7 @@ async function Get(req, res) {
 
     try {
 
-        const account = await prisma.bank_accounts.findMany({
+        const account = await prisma.bankAccounts.findMany({
             where: payload
         });
 
@@ -78,7 +78,7 @@ async function GetByPK(req, res) {
     const { id } = req.params
 
     try {
-        const account = await prisma.bank_accounts.findUnique({
+        const account = await prisma.bankAccounts.findUnique({
             where: {
                 id: Number(id)
             },
@@ -137,7 +137,7 @@ async function Update(req, res) {
 
 
     try {
-        const account = await prisma.bank_accounts.update({
+        const account = await prisma.bankAccounts.update({
             where: {
                 id: Number(id)
             },
@@ -162,7 +162,7 @@ async function Delete(req, res) {
     const { id } = req.params
 
     try {
-        await prisma.bank_accounts.delete({
+        await prisma.bankAccounts.delete({
             where: {
                 id: Number(id)
             },

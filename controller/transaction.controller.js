@@ -14,26 +14,6 @@ async function Insert(req, res) {
     }
 
     try {
-        // const sender = payload.source_account_id
-        // const receiver = payload.destination_account_id
-
-        // const balance = await prisma.bank_accounts.update({
-        //     where: {
-        //         id: Number(sender)
-        //     },
-        //     data: {
-        //         balance: -payload.amount
-        //     }
-        // })
-
-        // const balance2 = await prisma.bank_accounts.update({
-        //     where: {
-        //         id: Number(receiver)
-        //     },
-        //     data: {
-        //         balance: +payload.amount
-        //     }
-        // })
 
         const transaction = await prisma.transactions.create({
             data: payload

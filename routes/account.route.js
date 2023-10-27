@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { Insert, Get, GetByPK, Update, Delete } = require('../controller/account.controller')
+const { Insert, Get, GetByPK, Update, Delete } = require('../controller/bank.account.controller')
 const { CheckPostUser } = require('../middleware/middleware')
 
 router.post('/', Insert)
