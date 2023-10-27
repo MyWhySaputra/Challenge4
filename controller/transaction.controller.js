@@ -5,12 +5,14 @@ const prisma = new PrismaClient()
 
 async function Insert(req, res) {
 
+    console.log(req.body)
+
     const { source_account_id, destination_account_id, amount } = req.body
 
     const payload = {
-        source_account_id: parseInt(source_account_id),
-        destination_account_id: parseInt(destination_account_id),
-        amount: parseInt(amount),
+        source_account_id,
+        destination_account_id,
+        amount,
     }
 
     try {
@@ -81,7 +83,34 @@ async function Get(req, res) {
     try {
 
         const transaction = await prisma.transactions.findMany({
-            where: payload
+            where: payload,
+            select: {
+                source_account_id: true,
+                bank_account_source: {
+                    select: {
+                        bank_name: true,
+                        bank_account_number: true,
+                        user: {
+                            select: {
+                                name: true,
+                            }
+                        }
+                    }
+                },
+                destination_account_id: true,
+                bank_account_destination: {
+                    select: {
+                        bank_name: true,
+                        bank_account_number: true,
+                        user: {
+                            select: {
+                                name: true,
+                            }
+                        }
+                    }
+                },
+                amount: true,
+            }
         });
 
         let resp = ResponseTemplate(transaction, 'success', null, 200)
@@ -106,9 +135,32 @@ async function GetByPK(req, res) {
             where: {
                 id: Number(id)
             },
-            include: {
-                bank_account_source: true,
-                bank_account_destination: true
+            select: {
+                source_account_id: true,
+                bank_account_source: {
+                    select: {
+                        bank_name: true,
+                        bank_account_number: true,
+                        user: {
+                            select: {
+                                name: true,
+                            }
+                        }
+                    }
+                },
+                destination_account_id: true,
+                bank_account_destination: {
+                    select: {
+                        bank_name: true,
+                        bank_account_number: true,
+                        user: {
+                            select: {
+                                name: true,
+                            }
+                        }
+                    }
+                },
+                amount: true,
             }
         })
 

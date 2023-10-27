@@ -8,18 +8,18 @@ async function Insert(req, res) {
     const { user_id, bank_name, bank_account_number, balance } = req.body
 
     const payload = {
-        user_id: parseInt(user_id),
+        user_id,
         bank_name,
-        bank_account_number: parseInt(bank_account_number),
-        balance: parseInt(balance)
+        bank_account_number,
+        balance
     }
 
     try {
-        const bankaccount = await prisma.bankAccounts.create({
-            data: payload
+        const account = await prisma.bankAccounts.create({
+            data: payload,
         })
 
-        let resp = ResponseTemplate(bankaccount, 'success', null, 200)
+        let resp = ResponseTemplate(account, 'success', null, 200)
         res.json(resp)
         return
 
@@ -27,7 +27,6 @@ async function Insert(req, res) {
         let resp = ResponseTemplate(null, 'internal server error', error, 500)
         res.json(resp)
         return
-
 
     }
 }
@@ -57,7 +56,26 @@ async function Get(req, res) {
     try {
 
         const account = await prisma.bankAccounts.findMany({
-            where: payload
+            where: payload,
+            select: {
+                user_id: true,
+                bank_name: true,
+                bank_account_number: true,
+                balance: true,
+                user: {
+                    select: {
+                        name: true,
+                        email: true,
+                        profile: {
+                            select: {
+                                identity_type: true,
+                                identity_number: true,
+                                address: true
+                            }
+                        }
+                    }
+                }
+            }
         });
 
         let resp = ResponseTemplate(account, 'success', null, 200)
@@ -82,12 +100,22 @@ async function GetByPK(req, res) {
             where: {
                 id: Number(id)
             },
-            include: {
+            select: {
+                user_id: true,
+                bank_name: true,
+                bank_account_number: true,
+                balance: true,
                 user: {
                     select: {
                         name: true,
                         email: true,
-                        profile: true
+                        profile: {
+                            select: {
+                                identity_type: true,
+                                identity_number: true,
+                                address: true
+                            }
+                        }
                     }
                 }
             }
