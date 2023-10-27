@@ -8,12 +8,41 @@ async function Insert(req, res) {
     const { source_account_id, destination_account_id, amount } = req.body
 
     const payload = {
-        source_account_id,
-        destination_account_id,
-        amount
+        source_account_id: parseInt(source_account_id),
+        destination_account_id: parseInt(destination_account_id),
+        amount: parseInt(amount),
     }
 
     try {
+
+        const source = await prisma.bankAccounts.findUnique({
+        where: {bank_account_number: payload.source_account_id},
+        });
+        const destination = await prisma.bankAccounts.findUnique({
+        where: {bank_account_number: payload.destination_account_id},
+        });
+
+        if (!source || !destination) {
+            let resp = ResponseTemplate(null, 'Source or destination account not found', null, 404)
+            res.json(resp)
+            return
+        }
+
+        if (source.balance < payload.amount) {
+            let resp = ResponseTemplate(null, 'your balance is not enough', null, 400)
+            res.json(resp)
+            return
+        }
+
+        await prisma.bankAccounts.update({
+        where: {bank_account_source: source_account_id},
+        data: {balance: {decrement: payload.amount}},
+        })
+
+        await prisma.bankAccounts.update({
+        where: {bank_account_destination: destination_account_id},
+        data: {balance: {increment: payload.amount}},
+        })
 
         const transaction = await prisma.transactions.create({
             data: payload
@@ -27,7 +56,6 @@ async function Insert(req, res) {
         let resp = ResponseTemplate(null, 'internal server error', error, 500)
         res.json(resp)
         return
-
 
     }
 }
