@@ -8,7 +8,7 @@ function CheckPostUser(req, res, next) {
         email: Joi.string().email().required(),
         password: Joi.string().alphanum().min(6).required(),
         identity_type: Joi.string().required(),
-        identity_id: Joi.string().required(),
+        identity_number: Joi.string().required(),
         address: Joi.string().required()
     })
 

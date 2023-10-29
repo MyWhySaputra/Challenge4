@@ -10,9 +10,9 @@ async function Insert(req, res) {
     const { source_account_id, destination_account_id, amount } = req.body
 
     const payload = {
-        source_account_id,
-        destination_account_id,
-        amount,
+        source_account_id: parseInt(source_account_id),
+        destination_account_id: parseInt(destination_account_id),
+        amount: parseInt(amount),
     }
 
     try {
@@ -37,12 +37,12 @@ async function Insert(req, res) {
         }
 
         await prisma.bankAccounts.update({
-        where: {bank_account_source: source_account_id},
+        where: {bank_account_number: payload.source_account_id},
         data: {balance: {decrement: payload.amount}},
         })
 
         await prisma.bankAccounts.update({
-        where: {bank_account_destination: destination_account_id},
+        where: {bank_account_number: payload.destination_account_id},
         data: {balance: {increment: payload.amount}},
         })
 

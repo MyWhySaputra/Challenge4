@@ -8,10 +8,10 @@ async function Insert(req, res) {
     const { user_id, bank_name, bank_account_number, balance } = req.body
 
     const payload = {
-        user_id,
+        user_id: parseInt(user_id),
         bank_name,
-        bank_account_number,
-        balance
+        bank_account_number: parseInt(bank_account_number),
+        balance: parseInt(balance)
     }
 
     try {

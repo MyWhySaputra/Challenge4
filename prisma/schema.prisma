@@ -18,7 +18,7 @@ model user {
   createAt  DateTime  @default(now())
   updateAt  DateTime? @default(now())
   deletedAt DateTime?
-  profile   profile[]
+  profile   profile?
   bank_accounts bankAccounts[]
 }
 
@@ -39,7 +39,7 @@ model bankAccounts {
   user_id             Int       
   bank_name           String    @db.VarChar(100)
   bank_account_number Int       @unique
-  balance             BigInt    @db.BigInt
+  balance             Int       @db.Integer
   createAt            DateTime  @default(now())
   updateAt            DateTime? @default(now())
   deletedAt           DateTime?
@@ -52,7 +52,7 @@ model transactions {
   id                      Int       @id @default(autoincrement())
   source_account_id       Int       @unique
   destination_account_id  Int       @unique
-  amount                  BigInt    @db.BigInt
+  amount                  Int       @db.Integer
   createAt                DateTime  @default(now())
   updateAt                DateTime? @default(now())
   deletedAt               DateTime?

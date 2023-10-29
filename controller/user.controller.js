@@ -5,41 +5,39 @@ const prisma = new PrismaClient()
 
 async function Insert(req, res) {
 
-    console.log(req.body)
+    const { name, email, password, identity_type, identity_number, address } = req.body
 
-    const { name, email, password, identity_type, identity_id, address } = req.body
-
-    payload = {
+    const payload = {
         name,
         email,
         password,
         profile: {
             create: {
                 identity_type,
-                identity_id,
+                identity_number,
                 address
             }
         }
     }
 
     try {
+        
         const user = await prisma.user.create({
             data: payload,
             include: {
                 profile: true
             }
-        })
+        });
 
         let resp = ResponseTemplate(user, 'success', null, 200)
-        res.json(resp)
+        res.json(resp);
         return
 
     } catch (error) {
         let resp = ResponseTemplate(null, 'internal server error', error, 500)
         res.json(resp)
         return
-
-
+        
     }
 }
 
