@@ -211,6 +211,12 @@ async function Delete(req, res) {
     const { id } = req.params
 
     try {
+        await prisma.profile.delete({
+            where: {
+                user_id: Number(id)
+            },
+        })
+
         await prisma.user.delete({
             where: {
                 id: Number(id)

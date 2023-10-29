@@ -212,32 +212,9 @@ async function GetByPK(req, res) {
     }
 }
 
-async function Delete(req, res) {
-
-    const { id } = req.params
-
-    try {
-        await prisma.transactions.delete({
-            where: {
-                id: Number(id)
-            },
-        })
-
-        let resp = ResponseTemplate(null, 'success', null, 200)
-        res.json(resp)
-        return
-
-    } catch (error) {
-        let resp = ResponseTemplate(null, 'internal server error', error, 500)
-        res.json(resp)
-        return
-    }
-}
-
 
 module.exports = {
     Insert,
     Get,
-    GetByPK,
-    Delete
+    GetByPK
 }

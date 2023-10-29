@@ -7,7 +7,7 @@ router.post('/', CheckPostBankAccount, Insert)
 router.get('/', Get)
 router.get('/:id', GetByPK)
 router.put('/:id', CheckIdBankAccount, Update)
-router.delete('/:id', CheckIdBankAccount, Delete)
+router.delete('/:bank_account_number', Delete)
 
 
 module.exports = router

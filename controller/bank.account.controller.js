@@ -222,12 +222,41 @@ async function Update(req, res) {
 
 async function Delete(req, res) {
 
-    const { id } = req.params
+    const { bank_account_number } = req.params
 
     try {
+
+        const source = await prisma.transactions.findUnique({
+            where: {
+                source_account_id: Number(bank_account_number)
+            }
+        })
+
+        const destination = await prisma.transactions.findUnique({
+            where: {
+                destination_account_id: Number(bank_account_number)
+            }
+        })
+
+        if (source) {
+            await prisma.transactions.delete({
+                where: {
+                    source_account_id: Number(bank_account_number)
+                },
+            })
+        }
+
+        if (destination) {
+            await prisma.transactions.delete({
+                where: {
+                    destination_account_id: Number(bank_account_number)
+                },
+            })
+        }
+
         await prisma.bankAccounts.delete({
             where: {
-                id: Number(id)
+                bank_account_number: Number(bank_account_number)
             },
         })
 
