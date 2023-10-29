@@ -1,6 +1,9 @@
 
 const { ResponseTemplate } = require('../helper/template.helper')
 const Joi = require('joi');
+const { PrismaClient} = require('@prisma/client')
+
+const prisma = new PrismaClient()
 
 function CheckPostUser(req, res, next) {
     const schema = Joi.object({
@@ -17,6 +20,23 @@ function CheckPostUser(req, res, next) {
         let respErr = ResponseTemplate(null, 'invalid request',
             error.details[0].message, 400)
         res.json(respErr)
+        return
+    }
+
+    next()
+}
+
+async function CheckIdUser(req, res, next) {
+
+    const { id } = req.params
+
+    const input = await prisma.user.findUnique({
+        where: {id: Number(id)},
+    });
+
+    if (!input) {
+        let resp = ResponseTemplate(null, 'data not found', null, 404)
+        res.json(resp)
         return
     }
 
@@ -42,6 +62,23 @@ function CheckPostBankAccount(req, res, next) {
     next()
 }
 
+async function CheckIdBankAccount(req, res, next) {
+
+    const { id } = req.params
+
+    const input = await prisma.bankAccounts.findUnique({
+        where: {id: Number(id)},
+    });
+
+    if (!input) {
+        let resp = ResponseTemplate(null, 'data not found', null, 404)
+        res.json(resp)
+        return
+    }
+
+    next()
+}
+
 function CheckPostTransaction(req, res, next) {
     const schema = Joi.object({
         source_account_id: Joi.number().required(),
@@ -60,9 +97,29 @@ function CheckPostTransaction(req, res, next) {
     next()
 }
 
+async function CheckIdTransaction(req, res, next) {
+
+    const { id } = req.params
+
+    const input = await prisma.transactions.findUnique({
+        where: {id: Number(id)},
+    });
+
+    if (!input) {
+        let resp = ResponseTemplate(null, 'data not found', null, 404)
+        res.json(resp)
+        return
+    }
+
+    next()
+}
+
 
 module.exports = {
     CheckPostUser,
+    CheckIdUser,
     CheckPostBankAccount,
-    CheckPostTransaction
+    CheckIdBankAccount,
+    CheckPostTransaction,
+    CheckIdTransaction
 }

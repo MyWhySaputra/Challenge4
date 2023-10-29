@@ -98,6 +98,12 @@ async function Get(req, res) {
             data: users
         }
 
+        if (users === null) {
+            let resp = ResponseTemplate(null, 'data not found', null, 404)
+            res.json(resp)
+            return
+        }
+
         let resp = ResponseTemplate(pagination, 'success', null, 200)
         res.json(resp)
         return
@@ -133,6 +139,12 @@ async function GetByPK(req, res) {
                 }
             }
         })
+
+        if (users === null) {
+            let resp = ResponseTemplate(null, 'data not found', null, 404)
+            res.json(resp)
+            return
+        }
 
         let resp = ResponseTemplate(users, 'success', null, 200)
         res.json(resp)
@@ -174,14 +186,14 @@ async function Update(req, res) {
 
 
     try {
-        const user = await prisma.user.update({
+        const users = await prisma.user.update({
             where: {
                 id: Number(id)
             },
             data: payload
         })
 
-        let resp = ResponseTemplate(user, 'success', null, 200)
+        let resp = ResponseTemplate(users, 'success', null, 200)
         res.json(resp)
         return
 
@@ -199,13 +211,13 @@ async function Delete(req, res) {
     const { id } = req.params
 
     try {
-        const user = await prisma.user.delete({
+        await prisma.user.delete({
             where: {
                 id: Number(id)
             },
         })
 
-        let resp = ResponseTemplate(null, 'success', null, 200)
+        let resp = ResponseTemplate(null, 'data deleted', null, 200)
         res.json(resp)
         return
 

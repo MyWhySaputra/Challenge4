@@ -101,6 +101,12 @@ async function Get(req, res) {
             data: bankAccount
         }
 
+        if (bankAccount === null) {
+            let resp = ResponseTemplate(null, 'data not found', null, 404)
+            res.json(resp)
+            return
+        }
+
         let resp = ResponseTemplate(pagination, 'success', null, 200)
         res.json(resp)
         return
@@ -119,7 +125,7 @@ async function GetByPK(req, res) {
     const { id } = req.params
 
     try {
-        const account = await prisma.bankAccounts.findUnique({
+        const bankAccount = await prisma.bankAccounts.findUnique({
             where: {
                 id: Number(id)
             },
@@ -142,9 +148,15 @@ async function GetByPK(req, res) {
                     }
                 }
             }
-        })
+        });
 
-        let resp = ResponseTemplate(account, 'success', null, 200)
+        if (bankAccount === null) {
+            let resp = ResponseTemplate(null, 'data not found', null, 404)
+            res.json(resp)
+            return
+        }
+
+        let resp = ResponseTemplate(bankAccount, 'success', null, 200)
         res.json(resp)
         return
 

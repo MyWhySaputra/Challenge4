@@ -136,6 +136,12 @@ async function Get(req, res) {
             data: transaction
         }
 
+        if (transaction === null) {
+            let resp = ResponseTemplate(null, 'data not found', null, 404)
+            res.json(resp)
+            return
+        }
+
         let resp = ResponseTemplate(pagination, 'success', null, 200)
         res.json(resp)
         return
@@ -186,6 +192,12 @@ async function GetByPK(req, res) {
                 amount: true,
             }
         })
+
+        if (transaction === null) {
+            let resp = ResponseTemplate(null, 'data not found', null, 404)
+            res.json(resp)
+            return
+        }
 
         let resp = ResponseTemplate(transaction, 'success', null, 200)
         res.json(resp)
