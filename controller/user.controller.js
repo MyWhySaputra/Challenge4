@@ -37,7 +37,7 @@ async function Insert(req, res) {
         let resp = ResponseTemplate(null, 'internal server error', error, 500)
         res.json(resp)
         return
-        
+
     }
 }
 
@@ -60,8 +60,22 @@ async function Get(req, res) {
     }
 
     try {
+        // let page =1
+        // let limit = 10
+        let { page = 1, limit = 10 } = req.query // menghasilkan string
+        let skip = ( page - 1 ) * limit
+
+        //informasi total data keseluruhan 
+        const resultCount = await prisma.user.count() // integer jumlah total data user
+
+        //generated total page
+        const totalPage = Math.ceil( resultCount / limit)
 
         const users = await prisma.user.findMany({
+            //take : 10,
+            take : parseInt(limit),
+            //skip : 10
+            skip:skip,
             where: payload,
             select: {
                 id: true,
@@ -74,10 +88,17 @@ async function Get(req, res) {
                         address: true
                     }
                 }
-            }
+            },
         });
 
-        let resp = ResponseTemplate(users, 'success', null, 200)
+        const pagination = {
+            current_page: page - 0, // ini - 0 merubah menjadi integer
+            total_page : totalPage,
+            total_data: resultCount,
+            data: users
+        }
+
+        let resp = ResponseTemplate(pagination, 'success', null, 200)
         res.json(resp)
         return
 
